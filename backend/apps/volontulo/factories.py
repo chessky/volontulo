@@ -171,8 +171,11 @@ class OfferImageFactory(factory.DjangoModelFactory):
 class OfferFactory(factory.DjangoModelFactory):
     """Factory for Offer"""
 
-    _end_date = timezone.now()
-    _start_date = _end_date + datetime.timedelta(days=-100)
+    _now = timezone.now()
+    _end_date = _now + datetime.timedelta(days=100)
+    _start_date = _now - datetime.timedelta(days=100)
+    __start_date = _now + datetime.timedelta(days=101)
+    __end_date = _now + datetime.timedelta(days=201)
 
     class Meta:  # pylint: disable=C0111
         model = Offer
@@ -198,8 +201,9 @@ class OfferFactory(factory.DjangoModelFactory):
     benefits = factory.Faker("paragraph")
     location = factory.Faker("address", locale="pl_PL")
     title = factory.Faker("text", max_nb_chars=150)
+#    import pdb; pdb.set_trace() - zrobić snippet // life templates
     started_at = factory.fuzzy.FuzzyDateTime(_start_date, _end_date)
-    finished_at = factory.fuzzy.FuzzyDateTime(_start_date, _end_date)
+    finished_at = factory.fuzzy.FuzzyDateTime(__start_date, __end_date)
     time_period = factory.Faker("text", max_nb_chars=150)
     status_old = factory.fuzzy.FuzzyChoice(
         choices=("NEW", "ACTIVE", "SUSPENDED")
